@@ -5,6 +5,41 @@ import Split from "split.js";
 import * as monaco from "monaco-editor";
 import { extractImages, preprocess } from "./preprocessor";
 
+const defaultSource = `// Inspred by https://i.imgur.com/giRJijl.jpg
+
+digraph strategy {
+	node[shape=plain]
+
+	node[group=tokens]
+	SUSHI[token="0x6B3595068778DD592e39A122f4f5a5cF09C90fE2", label="", xlabel="SUSHI"];
+	YFI[token="0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e", label="", xlabel="YFI"];
+	ETH[token="0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", label="", xlabel="ETH"];
+	ETHYFI[token="0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", label="", xlabel="ETH / YFI SLP"];
+	YFI_VAULT[token="0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e", label="", xlabel="Yearn Vault"];
+	SUSHI2[token="0x6B3595068778DD592e39A122f4f5a5cF09C90fE2", label="", xlabel="SUSHI"];
+	XSUSHI[token="0x6B3595068778DD592e39A122f4f5a5cF09C90fE2", label="", xlabel="xSUSHI"];
+
+
+	node[group=descriptions]
+	sushi_desc[label="ETH is paired with YFI\\nand deposited into sushiswap\\nto provide liquidity"]
+	{rank = same; sushi_desc; SUSHI;}
+	eth_desc[label="ETH / YFI SLP token is\\n deposited into a yearn vault"]
+	{rank = same; eth_desc; YFI_VAULT;}
+	xsushi_desc[label="SUSHI token is generated and\\nstaked in xSUSHI to generate\\nsushiswap protocol fees"]
+	{rank = same; xsushi_desc; XSUSHI;}
+
+	subgraph connections {
+		YFI -> SUSHI;
+		ETH -> SUSHI;
+		SUSHI -> ETHYFI;
+		ETHYFI -> YFI_VAULT
+		YFI_VAULT -> SUSHI2;
+		SUSHI2 -> XSUSHI;
+		XSUSHI -> SUSHI2;
+	}
+}
+`;
+
 function debounce(func, wait) {
   let timeout;
   return function executedFunction(...args) {
@@ -31,10 +66,10 @@ function save(value) {
 }
 
 window.onload = function () {
-  const saved = localStorage.getItem("saved");
+  const saved = localStorage.getItem("saved") || defaultSource;
 
   const editor = monaco.editor.create(document.getElementById("editor"), {
-    value: saved || "",
+    value: saved,
     automaticLayout: true,
     minimap: {
       enabled: false,
