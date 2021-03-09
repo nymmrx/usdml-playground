@@ -5,7 +5,7 @@ import Split from "split.js";
 import * as monaco from "monaco-editor";
 import { extractImages, preprocess } from "./preprocessor";
 
-const defaultSource = `// Inspred by https://i.imgur.com/giRJijl.jpg
+const defaultSource = `// Inspred by https://i.imgur.com/giRJijl.jpg by https://twitter.com/gabrielhaines
 
 digraph strategy {
 	node[shape=plain]
@@ -58,7 +58,7 @@ function render(value) {
   for (const url of extractImages(dot)) {
     graphviz.addImage(url, "128px", "128px");
   }
-  graphviz.renderDot(dot);
+  graphviz.dot(dot).render();
 }
 
 function save(value) {

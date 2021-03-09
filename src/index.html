@@ -23,12 +23,10 @@
     }
     #editor {
       min-width: 300px;
-      border-right: 2px solid black;
       height: 100%;
     }
     #canvas {
       min-width: 300px;
-      border-left: 2px solid black;
       height: 100%;
     }
     #canvas svg {
@@ -36,8 +34,13 @@
       width: 100%;
     }
     #gutter {
-      background-color: black;
+      width: 1rem;
       cursor: col-resize;
+      background-color: gray;
+      transition: all 100ms;
+    }
+    #gutter:hover {
+      background-color: black;
     }
   </style>
   <body>
