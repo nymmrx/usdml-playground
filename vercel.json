@@ -1,8 +1,8 @@
 {
   "redirects": [
-    { 
-      "source": "/Language",
-      "destination": "https://usdml.vercel.app", 
+    {
+      "source": "/language",
+      "destination": "https://usdml.vercel.app",
       "permanent": true
     }
   ]

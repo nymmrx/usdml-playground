@@ -8,24 +8,25 @@ import { extractImages, preprocess } from "./preprocessor";
 const defaultSource = `// Inspred by https://i.imgur.com/giRJijl.jpg by https://twitter.com/gabrielhaines
 
 digraph strategy {
-	node[shape=plain]
+	node[shape=none, fontname="sans-serif"];
 
-	node[group=tokens]
-	SUSHI[token="0x6B3595068778DD592e39A122f4f5a5cF09C90fE2", label="", xlabel="SUSHI"];
-	YFI[token="0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e", label="", xlabel="YFI"];
-	ETH[token="0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", label="", xlabel="ETH"];
-	ETHYFI[token="0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", label="", xlabel="ETH / YFI SLP"];
-	YFI_VAULT[token="0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e", label="", xlabel="Yearn Vault"];
-	SUSHI2[token="0x6B3595068778DD592e39A122f4f5a5cF09C90fE2", label="", xlabel="SUSHI"];
-	XSUSHI[token="0x6B3595068778DD592e39A122f4f5a5cF09C90fE2", label="", xlabel="xSUSHI"];
+	node[group=tokens, height=1.35, imagepos="tc", labelloc="b"]
+	SUSHI[token="0x6B3595068778DD592e39A122f4f5a5cF09C90fE2", label="SUSHI"];
+	YFI[token="0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e", label="YFI"];
+	ETH[token="0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", label="ETH"];
+	ETHYFI[token="0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE", height=1.6, label="ETH/YFI\nSLP"];
+	YFI_VAULT[token="0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e", label="yVault"];
+	SUSHI2[token="0x6B3595068778DD592e39A122f4f5a5cF09C90fE2", label="SUSHI"];
+	XSUSHI[token="0x6B3595068778DD592e39A122f4f5a5cF09C90fE2", label="xSUSHI"];
 
 
-	node[group=descriptions]
-	sushi_desc[label="ETH is paired with YFI\\nand deposited into sushiswap\\nto provide liquidity"]
+	node[group=descriptions, height=1, labelloc="c"];
+	sushi_desc[label="ETH is paired with YFI\nand deposited into sushiswap\nto provide liquidity"];
 	{rank = same; sushi_desc; SUSHI;}
-	eth_desc[label="ETH / YFI SLP token is\\n deposited into a yearn vault"]
+	eth_desc[label="ETH / YFI SLP token is\n deposited into a yearn vault"];
+	eth_desc -> ETHYFI [style=invis];
 	{rank = same; eth_desc; YFI_VAULT;}
-	xsushi_desc[label="SUSHI token is generated and\\nstaked in xSUSHI to generate\\nsushiswap protocol fees"]
+	xsushi_desc[label="SUSHI token is generated and\nstaked in xSUSHI to generate\nsushiswap protocol fees"];
 	{rank = same; xsushi_desc; XSUSHI;}
 
 	subgraph connections {
