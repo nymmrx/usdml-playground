@@ -6,9 +6,9 @@ start
   = graph+
 
 graph
-  = _ strict:"strict"i? _ type:("graph"i / "digraph"i) _ id:ID? _ "{" children:stmt_list ? _ "}" _ {
+  = _ strict: "strict"i? _ type: ("graph"i / "digraph"i) _ id: ID? _ "{" children: stmt_list ? _ "}" _ {
       if (children === null) children = [];
-      var ret = {type:type.toLowerCase(), children:children};
+      var ret = {type: type.toLowerCase(), children: children};
       if (strict) { ret.strict = true }
       if (id) { ret.id = id }
       ret.location = location();
@@ -16,20 +16,18 @@ graph
     }
 
 stmt_list
-  = _ s:stmt _ ";"? e:(_ other:stmt _";"?  { return other; })* { return [s].concat(e); }
+  = _ s: stmt _ ";"? e: (_ other: stmt _";"?  { return other; })* { return [s].concat(e); }
 
 stmt
-  // an assignment as a statement e.g. 'label=4' is shorthand for 'graph [label=4]',
-  // so let's just pretend that's what we wrote
-  = left:ID _ '=' _ right:ID {
+  = left: ID _ '=' _ right: ID {
     return {
-      type:'attr_stmt',
-      target:'graph',
-      attr_list:[{
-        type:'attr',
-        id:left,
-        eq:right,
-        location:location()
+      type: 'attr_stmt',
+      target: 'graph',
+      attr_list: [{
+        type: 'attr',
+        id: left,
+        eq: right,
+        location: location()
       }]
     };
   }
@@ -40,97 +38,101 @@ stmt
   / ID '=' ID
 
 attr_stmt
-  = target:('graph'i/'node'i/'edge'i) attr:attr_list {
+  = target: ('graph'i/'node'i/'edge'i) attr: attr_list {
      return {
-       type:'attr_stmt',
-       target:target,
-       attr_list:attr
+       type: 'attr_stmt',
+       target: target,
+       attr_list: attr
      };
   }
 
 attr_list
-  = _ '[' _ list:a_list? _ ']' _ rest:attr_list? {
+  = _ '[' _ list: a_list? _ ']' _ rest: attr_list? {
     return (list || []).concat(rest || []);
   }
 
 a_list
-  = _ id:ID eq:(_ '=' _ v:ID {return v})? _ (',' / ';')? rest:a_list? {
-        return [{
-          type:'attr',
-          id:id,
-          eq: eq,
-          location:location()
-        }].concat(rest || []);
+  = _ attr: attr _ (',' / ';')? rest: a_list? {
+        return [attr].concat(rest || []);
     }
 
+attr
+  = id: ID eq: (_ '=' _ v: ID {return v})? {
+    return {
+          type: 'attr',
+          id: id,
+          eq: eq,
+          location: location()
+    }
+  }
+
 edge_stmt
-  = id:(subgraph / node_id) rhs:edgeRHS attr:attr_list? {
+  = id: (subgraph / node_id) rhs: edgeRHS attr: attr_list? {
        var edge_list = [id];
        edge_list = edge_list.concat(rhs.map(function(v){return v.id}));
 
        return {
-         type:'edge_stmt',
-         edge_list:edge_list,
-         attr_list:attr || []
+         type: 'edge_stmt',
+         edge_list: edge_list,
+         attr_list: attr || []
        };
     }
 
 edgeRHS
-  = _ edgeop:('->'/'--') _ id:(subgraph / node_id) _ rest:edgeRHS? {
+  = _ edgeop: ('->'/'--') _ id: (subgraph / node_id) _ rest: edgeRHS? {
       return [{
-        type:'edgeRHS',
-        edgeop:edgeop,
-        id:id
+        type: 'edgeRHS',
+        edgeop: edgeop,
+        id: id
       }].concat(rest || []);
   }
 
 node_stmt
-  = id:node_id attr:attr_list? {
+  = id: node_id attr: attr_list? {
     return {
-      type:'node_stmt',
-      node_id:id,
-      attr_list:attr || [],
-      location:location()
+      type: 'node_stmt',
+      node_id: id,
+      attr_list: attr || [],
+      location: location()
     };
   }
 
 node_id
-  = id:ID port:port? {
+  = id: ID port: port? {
       return port ? {
-        type:'node_id', id:id, port:port, location:location()
-      } : {
-        type:'node_id', id:id, location:location()
+        type: 'node_id', id: id, port: port, location: location()
+      } :  {
+        type: 'node_id', id: id, location: location()
       };
   }
 
 port 'port'
-  = ':' id:ID pt:(':' pt:compass_pt {return pt})? {
+  = ': ' id: ID pt: (': ' pt: compass_pt {return pt})? {
     return {
-      type:'port',
-      id:id,
-      compass_pt:pt || null,
-      location:location()
+      type: 'port',
+      id: id,
+      compass_pt: pt || null,
+      location: location()
     };
   }
-  //I think this rule is never used...
-  / ':' pt:compass_pt {
+  / ': ' pt: compass_pt {
     return {
-      type:'port',
-      compass_pt:pt || null,
-      location:location()
+      type: 'port',
+      compass_pt: pt || null,
+      location: location()
     }
   }
 
 subgraph
-  = g:('subgraph'i _ id:ID? _ {
+  = g: ('subgraph'i _ id: ID? _ {
         return id ? {
-          type:'subgraph', id:id
-        } : {
-          type:'subgraph'
+          type: 'subgraph', id: id
+        } :  {
+          type: 'subgraph'
         }
-      })? '{' s:stmt_list? _ '}' {
+      })? '{' s: stmt_list? _ '}' {
         g = g || {
-          type:'subgraph'
+          type: 'subgraph'
         };
         g.children = s || [];
         return g;
@@ -147,12 +149,12 @@ ID
   / HTML_STRING
 
 STRING "UNICODE_STRING"
-  = first:StringStart rest:StringPart* {
+  = first: StringStart rest: StringPart* {
       return first + rest.join('');
     }
     
 NUMBER_STRING
-  = first:NUMBER rest:STRING {
+  = first: NUMBER rest: STRING {
     return first + rest;
   }
   
@@ -166,34 +168,33 @@ StringPart
   / UnicodeDigit
 
 NUMBER "NUMBER"
-  = n:("-"? ("." [0-9]+ / [0-9]+("." [0-9]*)?)) {
+  = n: ("-"? ("." [0-9]+ / [0-9]+("." [0-9]*)?)) {
        return parseFloat(text());
     }
 
-/* html strings are enclosed in <>. The inside of those strings is xml.  All we
+/* html strings are enclosed in <>. The inside of those strings is xml. All we
  * care about is a balanced number of <'s and >'s, so we can simplify our life
  * a little by just matching balanced expressions, and then returning what's
- * inside the outermost <> pair
- */
+ * inside the outermost <> pair */
 HTML_STRING
-  = v:html_raw_string {
+  = v: html_raw_string {
       return {
-        type:'id',
-        value:v.slice(1,v.length-1),
-        html:true
+        type: 'id',
+        value: v.slice(1,v.length-1),
+        html: true
       };
     }
 
 html_raw_string
-  = '<' v:(html_char / html_raw_string)* '>' {
+  = '<' v: (html_char / html_raw_string)* '>' {
       return '<' + v.join('') + '>';
     }
 
 html_char
-  = v:(!('>'/'<') v:. { return v; })+ { return v.join(""); }
+  = v: (!('>'/'<') v: . { return v; })+ { return v.join(""); }
 
 QUOTED_STRING
-  = '"' chars:DoubleStringCharacter* '"' { return chars.join(""); }
+  = '"' chars: DoubleStringCharacter* '"' { return chars.join(""); }
 
 DoubleStringCharacter
   = QuoteEscape
@@ -201,7 +202,7 @@ DoubleStringCharacter
   / LineContinuation
 
 QuoteEscape
-  = v:("\\".) { return v[1] === '"' ? '"' : v[0] + v[1]; }
+  = v: ("\\".) { return v[1] === '"' ? '"' :  v[0] + v[1]; }
 
 LineContinuation
   = "\\" LineTerminatorSequence { return ""; }
@@ -220,7 +221,7 @@ SourceCharacter
   = .
 
 chars
-  = chars:char+ { return chars.join(""); }
+  = chars: char+ { return chars.join(""); }
 
 char
   = [^"\\\0-\x1F\x7f]
@@ -233,13 +234,13 @@ COMMENT "COMMENT"
  = (BLOCK_COMMENT / C_COMMENT / MACRO_COMMENT)
 
 BLOCK_COMMENT "BLOCK_COMMENT"
-  = "/*" v:(!"*/" v:. {return v;})* "*/" { return v.join('') }
+  = "/*" v: (!"*/" v: . {return v;})* "*/" { return v.join('') }
 
 C_COMMENT "C_COMMENT"
-  = "//" v:(![\n] v:. { return v; })* [\n]? { return v.join(''); }
+  = "//" v: (![\n] v: . { return v; })* [\n]? { return v.join(''); }
 
 MACRO_COMMENT "MACRO_COMMENT"
-  = "#" v:(![\n] v:. { return v; })* [\n]? { return v.join(''); }
+  = "#" v: (![\n] v: . { return v; })* [\n]? { return v.join(''); }
 
 
 _ "WHITESPACE"

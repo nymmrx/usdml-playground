@@ -6,8 +6,8 @@
   "license": "MIT",
   "scripts": {
     "grammar": "pegjs src/dot.peg",
-    "dev": "webpack serve --config webpack.config.js --mode development",
-    "build": "webpack --config webpack.config.js --mode production",
+    "dev": "VERSION=$(git rev-parse HEAD) webpack serve --config webpack.config.js --mode development",
+    "build": "VERSION=$(git rev-parse HEAD) webpack --config webpack.config.js --mode production",
     "serve": "serve dist"
   },
   "dependencies": {

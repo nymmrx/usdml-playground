@@ -48,13 +48,10 @@ export function preprocess(value) {
       if (node.id == "token") {
         const location = node.location;
         const orig = value.substring(
-          location.start.offset - 1,
-          location.end.offset + 1
+          location.start.offset,
+          location.end.offset
         );
-        const proc = orig.replace(
-          /token="(0x[a-fA-F0-9]{40})"/,
-          'image="https://raw.githack.com/yearn/yearn-assets/master/icons/tokens/$1/logo-128.png"'
-        );
+        const proc = `image="https://raw.githack.com/yearn/yearn-assets/master/icons/tokens/${node.eq}/logo-128.png"`;
         output = output.replace(orig, proc);
       }
     },

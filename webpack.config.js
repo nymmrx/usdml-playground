@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
@@ -62,7 +63,8 @@ module.exports = (env, argv) => ({
   // https://webpack.js.org/concepts/plugins/
   plugins: [
     new CleanWebpackPlugin({ dry: argv.mode !== "production" }),
-    new MonacoWebpackPlugin(),
+    new webpack.EnvironmentPlugin(["VERSION"]),
+    new MonacoWebpackPlugin({ languages: [] }),
     new MiniCssExtractPlugin(),
     new CopyWebpackPlugin({ patterns: [{ from: "./public" }] }),
     new HtmlWebpackPlugin({
