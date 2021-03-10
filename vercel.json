@@ -1,9 +1,9 @@
 {
   "redirects": [
     {
-      "source": "/language",
-      "destination": "https://usdml.vercel.app",
-      "permanent": true
+      "source": "/Language",
+      "destination": "https://usdml.nymm.app",
+      "permanent": false
     }
   ]
 }
